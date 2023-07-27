@@ -17,7 +17,8 @@ import convertMsToTime from "@/src/utils/convertMsToTime";
 import useStopwatches from "@/src/hooks/useStopwatchService";
 import TTEditCell from "@/src/components/TTEditCell/TTEditCell";
 
-const pageSize = 5;
+const pageSize = 50;
+const tableRows = 5;
 const syncToFirestoreDelay = 10000;
 
 export default function Trackers() {
@@ -46,7 +47,7 @@ export default function Trackers() {
       clearErrors();
       setLoading(false);
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [clearErrors, fetchData]);
 
   const handleSyncToFirestore = useCallback(async () => {
     try {
@@ -166,6 +167,7 @@ export default function Trackers() {
       console.error(error);
       addError("Error updating stopwatch description:" + error);
     }
+    setLoading(false);
   };
 
   // TODO create subcomponents to fix unecessary rerenders
@@ -194,8 +196,8 @@ export default function Trackers() {
       <DataTable
         value={dataTableValue}
         paginator
-        rows={pageSize}
-        first={(page - 1) * pageSize}
+        rows={tableRows}
+        first={(page - 1) * tableRows}
         onPage={(e) => {
           const newPage = e.first / e.rows + 1;
           setPage(newPage);

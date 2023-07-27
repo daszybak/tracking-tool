@@ -27,7 +27,8 @@ const queryReducer = (state, action) => {
       return state;
   }
 };
-const pageSize = 5;
+const pageSize = 50;
+const tableRows = 5;
 
 export default function History() {
   const [queryState, dispatch] = useReducer(queryReducer, {
@@ -37,7 +38,8 @@ export default function History() {
     desc: "",
   });
   const [loading, setLoading] = useState(true);
-  const { state, deleteStopwatch, editStopwatch, fetchData } = useStopwatches();
+  const { state, deleteStopwatch, editStopwatch, fetchData, updateStopwatchDescription } =
+    useStopwatches();
 
   useEffect(() => {
     (async () => {
@@ -45,10 +47,11 @@ export default function History() {
       await fetchData(pageSize, queryState.startDate, queryState.endDate, queryState.desc);
       setLoading(false);
     })();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchData, queryState.startDate, queryState.endDate, queryState.desc]);
 
   const dataTableValue = state.stopwatches.map((stopwatch) => {
     return {
+      id: stopwatch.id,
       startDate: new Date(stopwatch.startTime).toLocaleDateString(),
       description: stopwatch.description,
       duration: convertMsToTime(stopwatch.duration),
@@ -67,9 +70,11 @@ export default function History() {
       await updateStopwatchDescription(id, description);
     } catch (error) {
       console.error(error);
-      addError("Error updating stopwatch description:" + error);
     }
+    setLoading(false);
   };
+
+  console.log(dataTableValue);
 
   return (
     <div className="history">
@@ -79,18 +84,18 @@ export default function History() {
       <div className="action-filter-container">
         <Calendar
           value={queryState.startDate}
-          onChange={(e) => dispatch({ type: "SET_START_DATE", payload: e.value })}
+          onChange={(e) => dispatch({ type: "SET_START_DATE", payload: new Date(e.value) })}
           // TODO keep localized date format
-          dateFormat="dd-mm-yyyy"
+          dateFormat="dd-mm-yy"
           placeholder="Start Date"
           showIcon
           // icon={<NounDailyCalendar />}
         />
         <Calendar
           value={queryState.endDate}
-          onChange={(e) => dispatch({ type: "SET_END_DATE", payload: e.value })}
+          onChange={(e) => dispatch({ type: "SET_END_DATE", payload: new Date(e.value) })}
           // TODO keep localized date format
-          dateFormat="dd-mm-yyyy"
+          dateFormat="dd-mm-yy"
           placeholder="End Date"
           showIcon
           // icon={<NounDailyCalendar />}
@@ -102,12 +107,14 @@ export default function History() {
           // icon={<NounClose />}
         />
       </div>
+      {/* // TODO fix */}
+      <span>Click on description cell to edit</span>
       <DataTable
         value={dataTableValue}
         paginator
-        rows={pageSize}
+        rows={tableRows}
         loading={loading}
-        first={(queryState.page - 1) * pageSize}
+        first={(queryState.page - 1) * tableRows}
         onPage={(e) => {
           const newPage = e.first / e.rows + 1;
           dispatch({ type: "SET_PAGE", payload: newPage });

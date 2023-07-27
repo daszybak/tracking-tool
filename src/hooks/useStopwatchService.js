@@ -66,9 +66,10 @@ export default function useStopwatcheService() {
         let stopwatchQuery = query(userTrackersCollection, orderBy("startTime", "desc"));
 
         if (state.lastVisible) {
-          const startAfterDoc = doc(db, `users/${user.uid}/trackers`, startAfter);
-          const startAfterSnapshot = await getDoc(startAfterDoc);
-          stopwatchQuery = query(stopwatchQuery, startAfter(startAfterSnapshot));
+          const lastVisibleDoc = state.stopwatches.find((doc) => doc.id === state.lastVisible);
+          if (lastVisibleDoc) {
+            stopwatchQuery = query(stopwatchQuery, startAfter(lastVisibleDoc));
+          }
         }
 
         if (startDate && endDate) {
@@ -96,7 +97,7 @@ export default function useStopwatcheService() {
             type: "SET_STOPWATCHES",
             payload: {
               stopwatches,
-              lastVisible: stopwatches.at(-1).id,
+              lastVisible: stopwatches[stopwatches.length - 1].id,
               activeStopwatchId: stopwatches.find((value) => value.isRunning === true)?.id ?? "",
             },
           });
@@ -105,7 +106,7 @@ export default function useStopwatcheService() {
         throw err;
       }
     },
-    [db, state.lastVisible, user.uid],
+    [db, state.lastVisible, state.stopwatches, user.uid],
   );
 
   const deleteStopwatch = async (id) => {
@@ -124,25 +125,6 @@ export default function useStopwatcheService() {
 
     try {
       await deleteDoc(doc(db, `users/${user.uid}/trackers`, id));
-
-      // const newDocQuery = query(
-      //   collection(db, `users/${user.uid}/trackers`),
-      //   orderBy("startTime", "desc"),
-      //   startAfter(state.lastVisible),
-      //   limit(1),
-      // );
-      // const newDocSnapshot = await getDocs(newDocQuery);
-
-      // if (!newDocSnapshot.empty) {
-      //   const newDoc = newDocSnapshot.docs[0];
-      //   dispatch({
-      //     type: "SET_STOPWATCHES",
-      //     payload: {
-      //       stopwatches: [...updatedStopwatches, { id: newDoc.id, ...newDoc.data() }],
-      //       lastVisible: newDoc.id,
-      //     },
-      //   });
-      // }
     } catch (err) {
       dispatch({
         type: "SET_STOPWATCHES",
