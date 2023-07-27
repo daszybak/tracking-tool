@@ -1,0 +1,301 @@
+/* map Figma design color naming */
+:root {
+  --port-gore: #181846;
+  --orange: #ff5722;
+  --lynch: #5f6b8a;
+  --whisper: #ecedf5;
+  --white-lillac: #f9f9fd;
+  --ghost: #c4c5d7;
+  --white: #ffffff;
+  --ebony: #0c0d25;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+h1 {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 17px;
+  word-wrap: break-word;
+}
+
+a,
+a:link,
+a:hover,
+a:visited,
+a:active {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+li {
+  list-style-type: none;
+}
+
+label {
+  color: var(--lynch);
+}
+
+/* PrimeReact overrides */
+/* Customizations for PrimeReact Button */
+.p-button {
+  background-color: var(--orange);
+  border-radius: 3px;
+  border: 1px solid var(--orange);
+  height: 36px;
+  margin: 0;
+}
+
+.p-button .p-button-label {
+  /* Button text styles */
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 17px;
+  word-wrap: break-word;
+}
+
+.p-button .p-button-icon {
+  /* Button icon styles */
+}
+
+/* Customizations for PrimeReact InputText */
+.p-inputtext {
+  /* Input text common styles */
+  display: block;
+  height: 42px;
+  border: none;
+  border-radius: 3px;
+  padding-left: 20px;
+}
+
+.p-float-label > label {
+  left: 20px;
+}
+
+.p-password-info {
+  font-size: 14px;
+  color: var(--lynch);
+}
+
+.p-password-meter {
+  display: none;
+}
+
+.p-float-label .p-inputwrapper-filled ~ label,
+.p-float-label .p-inputwrapper-focus ~ label,
+.p-float-label input.p-filled ~ label,
+.p-float-label input:focus ~ label,
+.p-float-label input:focus.p-filled ~ label {
+  left: 0;
+}
+
+.p-float-label svg {
+  color: var(--lynch);
+  width: 20px;
+  height: 20px;
+}
+
+.p-input-icon-right > i,
+.p-input-icon-right > svg,
+.p-input-icon-right > .p-input-suffix {
+  right: 11px;
+}
+
+.p-datatable-thead {
+  background-color: var(--white-lillac);
+  border: 1px solid var(--whisper);
+  height: 70px;
+}
+
+.p-column-title {
+  color: var(--ebony);
+  font-size: 18px;
+  padding-left: 22px;
+  font-weight: 700;
+  line-height: 17px;
+  word-wrap: break-word;
+}
+
+.p-datatable .p-datatable-table {
+  border-collapse: collapse;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+  height: 67px;
+  border-top: 1px solid var(--whisper);
+  border-bottom: 1px solid var(--whisper);
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  padding-left: 22px;
+}
+
+.p-datatable .p-datatable-tbody .p-row-odd {
+  border-top: none;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+  border-left: 1px solid var(--whisper);
+  color: var(--lynch);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  word-wrap: break-word;
+}
+
+.p-datatable .p-datatable-tbody > tr > td:last-child {
+  border-right: 1px solid var(--whisper);
+}
+
+/* Customizations for PrimeReact Pagination */
+.p-paginator {
+  /* Paginator common styles */
+}
+
+.p-paginator-first,
+.p-paginator-prev,
+.p-paginator-next,
+.p-paginator-last,
+.p-paginator-page {
+  /* Paginator button styles */
+}
+
+.p-paginator-current {
+  /* Current page number styles */
+}
+
+/* END PrimeReact overrides */
+
+/* Authentication pages */
+.auth-form .username-field {
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.auth-form .password-field {
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.auth-form .confirm-password-field {
+  margin-bottom: 50px;
+  width: 100%;
+}
+
+.auth-form .submit-button {
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* END Authentication pages */
+
+/* Trackers and history pages */
+
+.trackers-history h1 {
+  text-align: left;
+  color: var(--ebony);
+  display: flex;
+  align-items: center;
+  margin-bottom: 82px;
+}
+
+.trackers-history h1 svg {
+  margin-right: 16px;
+}
+
+.trackers-history .p-datatable {
+  min-height: 740px;
+}
+
+.trackers-history .action-filter-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 36px;
+}
+
+.trackers-history .action-filter-container .p-inputtext.p-component {
+  border: 1px solid var(--whisper);
+}
+
+.trackers-history .action-filter-container .p-button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.trackers-history .action-filter-container .start-button {
+  width: 166px;
+}
+
+.trackers-history .action-filter-container .stop-button {
+  width: 113px;
+  background-color: var(--port-gore);
+}
+
+.trackers-history .action-filter-container .p-inputtext {
+  width: 330px;
+}
+
+.trackers-history .actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.trackers-history .actions-cell svg {
+  cursor: pointer;
+}
+
+/* END Trackers and history pages */
+
+/* Trackers page */
+
+.trackers-history .trackers .p-datatable .duration-column {
+  width: 25%;
+}
+
+.trackers-history .trackers .p-datatable .description-column {
+  width: 50%;
+}
+
+.trackers-history .trackers .p-datatable .actions-column {
+  width: 25%;
+}
+
+/* END Trackers page */
+
+/* History page */
+
+.trackers-history .history .p-datatable .start-column {
+  width: 20%;
+}
+
+.trackers-history .history .p-datatable .description-column {
+  width: 40%;
+}
+
+.trackers-history .history .p-datatable .actions-column {
+  width: 20%;
+}
+
+.trackers-history .history .p-datatable .actions-column {
+  width: 20%;
+}
+
+/* END History page */
