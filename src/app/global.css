@@ -66,10 +66,6 @@ label {
   word-wrap: break-word;
 }
 
-.p-button .p-button-icon {
-  /* Button icon styles */
-}
-
 /* Customizations for PrimeReact InputText */
 .p-inputtext {
   /* Input text common styles */
@@ -161,7 +157,7 @@ label {
 
 /* Customizations for PrimeReact Pagination */
 .p-paginator {
-  /* Paginator common styles */
+  margin-top: 50px;
 }
 
 .p-paginator-first,
@@ -169,11 +165,18 @@ label {
 .p-paginator-next,
 .p-paginator-last,
 .p-paginator-page {
-  /* Paginator button styles */
+  margin-right: 21px;
+}
+.p-paginator-last {
+  margin-right: 0;
 }
 
-.p-paginator-current {
-  /* Current page number styles */
+.p-paginator .p-highlight {
+  height: 33px;
+  width: 33px;
+  background-color: var(--ghost);
+  border-radius: 3px;
+  color: var(--white);
 }
 
 /* END PrimeReact overrides */

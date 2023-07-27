@@ -42,8 +42,7 @@ export default function History() {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await fetchData(pageSize, startDate, endDate, desc);
-      clearErrors();
+      await fetchData(pageSize, queryState.startDate, queryState.endDate, queryState.desc);
       setLoading(false);
     })();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -62,16 +61,15 @@ export default function History() {
     };
   });
 
-    const handleEditDescription = async (id, description) => {
-      try {
-        setLoading(true);
-        await updateStopwatchDescription(id, description);
-        clearErrors();
-      } catch (error) {
-        console.error(error);
-        addError("Error updating stopwatch description:" + error);
-      }
-    };
+  const handleEditDescription = async (id, description) => {
+    try {
+      setLoading(true);
+      await updateStopwatchDescription(id, description);
+    } catch (error) {
+      console.error(error);
+      addError("Error updating stopwatch description:" + error);
+    }
+  };
 
   return (
     <div className="history">
@@ -109,7 +107,7 @@ export default function History() {
         paginator
         rows={pageSize}
         loading={loading}
-        first={(page - 1) * pageSize}
+        first={(queryState.page - 1) * pageSize}
         onPage={(e) => {
           const newPage = e.first / e.rows + 1;
           dispatch({ type: "SET_PAGE", payload: newPage });
