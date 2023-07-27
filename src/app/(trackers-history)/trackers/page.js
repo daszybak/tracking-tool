@@ -47,7 +47,7 @@ export default function Trackers() {
       clearErrors();
       setLoading(false);
     })();
-  }, [clearErrors, fetchData]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSyncToFirestore = useCallback(async () => {
     try {

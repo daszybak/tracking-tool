@@ -47,7 +47,9 @@ export default function History() {
       await fetchData(pageSize, queryState.startDate, queryState.endDate, queryState.desc);
       setLoading(false);
     })();
-  }, [fetchData, queryState.startDate, queryState.endDate, queryState.desc]);
+    // TODO find solution for querying on startDate, endDate, desc
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // }, [fetchData, queryState.startDate, queryState.endDate, queryState.desc]);
 
   const dataTableValue = state.stopwatches.map((stopwatch) => {
     return {
