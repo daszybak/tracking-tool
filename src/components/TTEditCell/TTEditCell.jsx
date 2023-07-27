@@ -1,15 +1,23 @@
 import { InputText } from "primereact/inputtext";
-import { memo } from "react";
+import { useEffect, useState, memo } from "react";
 
-export default memo(function TTEditCell(props) {
+const TTEditCell = (props) => {
+  const [value, setValue] = useState(props.value);
+
+  useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);
+
+  const onEditorValueChange = (e) => {
+    setValue(e.target.value);
+    if (props.editorCallback) {
+      props.editorCallback(e.target.value);
+    }
+  };
+
   return (
-    <InputText
-      type="text"
-      value={props.value}
-      style={{ width: "100%" }}
-      onChange={(e) => {
-        props.editorCallback(e.currentTarget.value);
-      }}
-    />
+    <InputText type="text" value={value} style={{ width: "100%" }} onChange={onEditorValueChange} />
   );
-});
+};
+
+export default memo(TTEditCell);

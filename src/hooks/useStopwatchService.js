@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useState, useCallback, useRef } from "react";
+import { useReducer, useCallback } from "react";
 import {
   getDocs,
   collection,
@@ -13,7 +13,7 @@ import {
   where,
   writeBatch,
   getDoc,
-  setDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { getFirestore } from "firebase/firestore";
 import app from "@/src/firebase";
@@ -60,22 +60,25 @@ export default function useStopwatcheService() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const fetchData = useCallback(
-    async (pageSize, startAfter = null, startDate = null, endDate = null, description = null) => {
+    async (pageSize, startDate = null, endDate = null, description = null) => {
       try {
         const userTrackersCollection = collection(db, `users/${user.uid}/trackers`);
         let stopwatchQuery = query(userTrackersCollection, orderBy("startTime", "desc"));
 
-        if (startAfter) {
+        if (state.lastVisible) {
           const startAfterDoc = doc(db, `users/${user.uid}/trackers`, startAfter);
           const startAfterSnapshot = await getDoc(startAfterDoc);
           stopwatchQuery = query(stopwatchQuery, startAfter(startAfterSnapshot));
         }
 
         if (startDate && endDate) {
+          const startTimestamp = Timestamp.fromDate(startDate);
+          const endTimestamp = Timestamp.fromDate(endDate);
+
           stopwatchQuery = query(
             stopwatchQuery,
-            where("startTime", ">=", startDate),
-            where("startTime", "<=", endDate),
+            where("startTime", ">=", startTimestamp),
+            where("startTime", "<=", endTimestamp),
           );
         }
 
@@ -102,7 +105,7 @@ export default function useStopwatcheService() {
         throw err;
       }
     },
-    [db, user.uid],
+    [db, state.lastVisible, user.uid],
   );
 
   const deleteStopwatch = async (id) => {

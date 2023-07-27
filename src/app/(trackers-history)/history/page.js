@@ -9,40 +9,40 @@ import NounTrash from "@/src/icons/NounTrash";
 import NounEdit from "@/src/icons/NounEdit";
 import NounDailyCalendar from "@/src/icons/NounDailyCalendar";
 import getTodaysDateFormatted from "@/src/utils/getTodaysDateFormatted";
-import useErrors from "@/src/hooks/useErrors";
-import TTErrorMessage from "@/src/components/TTErrorMessage/TTErrorMessage";
-import { Button } from "primereact/button";
 import useStopwatches from "@/src/hooks/useStopwatchService";
 import convertMsToTime from "@/src/utils/convertMsToTime";
+import TTEditCell from "@/src/components/TTEditCell/TTEditCell";
 
 const queryReducer = (state, action) => {
   switch (action.type) {
     case "SET_PAGE":
       return { ...state, page: action.payload };
     case "SET_START_DATE":
-      return { ...state, start_date: action.payload };
+      return { ...state, startDate: action.payload };
     case "SET_END_DATE":
-      return { ...state, end_date: action.payload };
+      return { ...state, endDate: action.payload };
     case "SET_DESC":
       return { ...state, desc: action.payload };
     default:
       return state;
   }
 };
-const pageSize = 10;
+const pageSize = 5;
 
 export default function History() {
   const [queryState, dispatch] = useReducer(queryReducer, {
     page: 1,
+    startDate: null,
+    endDate: null,
+    desc: "",
   });
-  const { addError, clearErrors, getErrorsString, isErrors } = useErrors();
   const [loading, setLoading] = useState(true);
   const { state, deleteStopwatch, editStopwatch, fetchData } = useStopwatches();
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      await fetchData(pageSize);
+      await fetchData(pageSize, startDate, endDate, desc);
       clearErrors();
       setLoading(false);
     })();
@@ -62,10 +62,16 @@ export default function History() {
     };
   });
 
-  console.log("dataTableValue", dataTableValue);
-
-  // TODO fix this hack
-  dataTableValue.unshift({});
+    const handleEditDescription = async (id, description) => {
+      try {
+        setLoading(true);
+        await updateStopwatchDescription(id, description);
+        clearErrors();
+      } catch (error) {
+        console.error(error);
+        addError("Error updating stopwatch description:" + error);
+      }
+    };
 
   return (
     <div className="history">
@@ -74,7 +80,7 @@ export default function History() {
       </h1>
       <div className="action-filter-container">
         <Calendar
-          value={queryState.start_date}
+          value={queryState.startDate}
           onChange={(e) => dispatch({ type: "SET_START_DATE", payload: e.value })}
           // TODO keep localized date format
           dateFormat="dd-mm-yyyy"
@@ -83,7 +89,7 @@ export default function History() {
           // icon={<NounDailyCalendar />}
         />
         <Calendar
-          value={queryState.end_date}
+          value={queryState.endDate}
           onChange={(e) => dispatch({ type: "SET_END_DATE", payload: e.value })}
           // TODO keep localized date format
           dateFormat="dd-mm-yyyy"
@@ -101,29 +107,29 @@ export default function History() {
       <DataTable
         value={dataTableValue}
         paginator
-        rows={10}
+        rows={pageSize}
         loading={loading}
-        first={queryState.page}
-        onPage={(e) => dispatch({ type: "SET_PAGE", payload: e.first / e.rows + 1 })}
+        first={(page - 1) * pageSize}
+        onPage={(e) => {
+          const newPage = e.first / e.rows + 1;
+          dispatch({ type: "SET_PAGE", payload: newPage });
+        }}
       >
         <Column field="startDate" header="Date" className="start-column" />
-        <Column field="description" header="Description" className="description-column" />
+        <Column
+          field="description"
+          header="Description"
+          className="description-column"
+          editor={(props) => (
+            <TTEditCell
+              {...props}
+              editorCallback={(newValue) => handleEditDescription(props.rowData.id, newValue)}
+            />
+          )}
+        />
         <Column field="duration" header="Time Tracked" className="duration-column" />
         <Column field="actions" header="Actions" className="actions-column" />
       </DataTable>
-      {isErrors && (
-        <>
-          <TTErrorMessage error={getErrorsString()} />
-          <Button
-            onClick={async () => {
-              await fetchData();
-              clearErrors();
-            }}
-          >
-            Fetch data
-          </Button>
-        </>
-      )}
     </div>
   );
 }

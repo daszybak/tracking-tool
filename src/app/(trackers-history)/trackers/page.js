@@ -150,7 +150,7 @@ export default function Trackers() {
             <NounPause onClick={() => handleStopStopwatch(stopwatch.id)} />
           )}
           <NounStopButton onClick={() => handleStopStopwatch(stopwatch.id)} />
-          <NounEdit onClick={() => editStopwatch(stopwatch.id)} />
+          <NounEdit />
           <NounTrash onClick={() => handleDeleteStopwatch(stopwatch.id)} />
         </div>
       ),
@@ -167,9 +167,6 @@ export default function Trackers() {
       addError("Error updating stopwatch description:" + error);
     }
   };
-
-  // TODO fix this hack
-  dataTableValue.unshift({});
 
   // TODO create subcomponents to fix unecessary rerenders
   return (
@@ -192,12 +189,17 @@ export default function Trackers() {
           Stop all
         </Button>
       </div>
+      {/* // TODO fix */}
+      <span>Click on description cell to edit</span>
       <DataTable
         value={dataTableValue}
         paginator
-        rows={10}
-        first={page}
-        onPage={(e) => setPage(e.first / e.rows + 1)}
+        rows={pageSize}
+        first={(page - 1) * pageSize}
+        onPage={(e) => {
+          const newPage = e.first / e.rows + 1;
+          setPage(newPage);
+        }}
         loading={loading}
         editMode="cell"
       >
@@ -206,8 +208,12 @@ export default function Trackers() {
           field="description"
           header="Description"
           className="description-column"
-          editor={(props) => <TTEditCell {...props} />}
-          onCellEditComplete={(e) => handleEditDescription(e.rowData.id, e.newValue)}
+          editor={(props) => (
+            <TTEditCell
+              {...props}
+              editorCallback={(newValue) => handleEditDescription(props.rowData.id, newValue)}
+            />
+          )}
         />
         <Column field="actions" header="Actions" className="actions-column" />
       </DataTable>
